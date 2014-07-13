@@ -268,3 +268,16 @@
   }
 
 }( window.jQuery );
+
+
+(function($){
+  // 修改tooltip插件的setContent方法, 在"输出"环节避免xss问题
+  // > XSS的存在，一定是伴随着输入，与输出2个概念的。[那些年我们一起学XSS - 1](http://www.wooyun.org/bugs/wooyun-2010-015957)
+  // console.log(  $.fn.tooltip.Constructor.prototype );
+  $.fn.tooltip.Constructor.prototype.setContent = function(){
+    var $tip = this.tip()
+    var content = this.getTitle().replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    $tip.find('.tooltip-inner').html( content );
+    $tip.removeClass('fade in top bottom left right')
+  }
+})(window.jQuery);
